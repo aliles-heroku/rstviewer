@@ -1,0 +1,101 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block header %}
+<style type="text/css">
+    button {
+        margin-right: 9px;
+    }
+    textarea {
+        font-family: monospace;
+    }
+    .actions {
+        padding: 3px;
+    }
+</style>
+
+<script>
+    function set_height() {
+        var content_height = $(window).height() - $("#content").offset().top
+        $("#content").height(content_height)
+
+        var inputs_height = $(window).height() - $("#inputs").offset().top
+        $("#inputs").height(inputs_height)
+    }
+    $(window).resize(set_height)
+    $(document).ready(set_height)
+    $(document).ready(function() {
+        var form = $("form")
+        $("button[type='submit']").click(function() {form.submit()})
+    })
+</script>
+{% endblock %}
+
+{% block navlinks %}
+<li><button type="submit" class="btn btn-success">Display</button></li>
+<li><button class="btn btn-info" href="#rstSyntax"data-toggle="modal">rST Syntax Help</button></li>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="container-fluid tall">
+    <form action="/render" method="POST" target="render_rst" enctype="multipart/form-data">
+        {{form.hidden_tag()}}
+        <div id="inputs" class="row-fluid">
+            <div class="span6 tall">
+                {{form.input_text(class="input-block-level tall wide", placeholder=placeholder)}}
+            </div>
+            <div class="span6 tall">
+                <iframe name="render_rst" class="tall wide">
+                </iframe>
+            </div>
+        </div>
+    </form>
+    <div id="rstSyntax" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="modalLabel">reStructuredText Syntax</h3>
+        </div>
+        <div class="modal-body">
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="well">
+                        <!-- <h5>Inline Markup</h5> -->
+                        <i>*emphasis*</i>, <b>**strong emphasis**</b> and <tt>``inline literal``</tt>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="well">
+                        <!-- <h5>Hyperlinks</h5> -->
+                        <tt>Embedded URI to `Python &lt;http://wwww.python.org&gt;`_.</tt><br/>
+                        <tt>Fold in URI to `Python.org preview`_.</tt><br/>
+                        <br/>
+                        <tt>.. _Python.org preview: https://preview.python.org</tt>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="well">
+                        <!-- <h5>Bullet Lists</h5> -->
+                        <tt>- First Item</tt><br/>
+                        <tt>- Second Item</tt>
+                    </div>
+                </div>
+                <div class="span6">
+                    <div class="well">
+                        <!-- <h5>Enumerated Lists</h5> -->
+                        <tt>1. Numbered Item 1</tt><br/>
+                        <tt>2. Numbered Item 2</tt>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a class="pull-left" href="http://docutils.sourceforge.net/docs/user/rst/quickref.html">Quick reStructuredText reference</a>
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
